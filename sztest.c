@@ -64,19 +64,19 @@ int main(int argc, char **argv) {
 
     printf("\n== RAND ==\n");
     unsigned char *rand_out =
-        test_roundtrip(rand_data, n, abs_bound, 0, 0, 0, cols, rows);
+        test_roundtrip(rand_data, n, abs_bound, 0, 0, 0, rows, cols);
 
     printf("\n== LIN ==\n");
     unsigned char *lin_out =
-        test_roundtrip(lin_data, n, abs_bound, 0, 0, 0, cols, rows);
+        test_roundtrip(lin_data, n, abs_bound, 0, 0, 0, rows, cols);
 
     printf("\n== CONST ==\n");
     unsigned char *const_out =
-        test_roundtrip(const_data, n, abs_bound, 0, 0, 0, cols, rows);
+        test_roundtrip(const_data, n, abs_bound, 0, 0, 0, rows, cols);
 
     printf("\n== SET ==\n");
     unsigned char *set_out =
-        test_roundtrip(&set_data[0][0], 2*3, abs_bound, 0, 0, 0, 3, 2);
+        test_roundtrip(&set_data[0][0], 2*3, abs_bound, 0, 0, 0, 2, 3);
 
 
     free(rand_data);
