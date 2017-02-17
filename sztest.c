@@ -62,10 +62,6 @@ int main(int argc, char **argv) {
         exit(EXIT_FAILURE);
     }
 
-    //printf("== SET ==\n");
-    //unsigned char *set_out =
-    //    test_roundtrip(&set_data[0][0], 2*3, abs_bound, 0, 0, 0, 3, 2);
-
     printf("\n== RAND ==\n");
     unsigned char *rand_out =
         test_roundtrip(rand_data, n, abs_bound, 0, 0, 0, cols, rows);
@@ -78,11 +74,16 @@ int main(int argc, char **argv) {
     unsigned char *const_out =
         test_roundtrip(const_data, n, abs_bound, 0, 0, 0, cols, rows);
 
+    printf("\n== SET ==\n");
+    unsigned char *set_out =
+        test_roundtrip(&set_data[0][0], 2*3, abs_bound, 0, 0, 0, 3, 2);
+
+
     free(rand_data);
     free(lin_data);
     free(const_data);
 
-    //free(set_out);
+    free(set_out);
     free(rand_out);
     free(lin_out);
     free(const_out);
@@ -91,7 +92,7 @@ int main(int argc, char **argv) {
 }
 
 
-// returns -1 if any individual error is greater than abs_bound, otherwise
+// returns negative if any individual error is greater than abs_bound, otherwise
 // returns the average error.
 double check_err(double *a, double *b, size_t n, double abs_bound) {
     double diff;
@@ -99,7 +100,7 @@ double check_err(double *a, double *b, size_t n, double abs_bound) {
     for (int i=0; i<n; i++) {
         diff = fabs(a[i] - b[i]);
         if (diff > abs_bound) {
-            return -1;
+            return -1 * diff;
         }
         total_error += diff;
     }
@@ -116,7 +117,8 @@ unsigned char *test_roundtrip(double *data, unsigned int n,
                                           ABS, abs_bound, 0,
                                           r5, r4, r3, r2, r1);
 
-    printf("out_size = %d\n", out_size);
+    printf("out_size = %d (%0.4f)\n", out_size,
+           (double)out_size / (n * sizeof(double)));
     printf("out = %p\n", out);
     printf("abs bound = %0.16f\n", abs_bound);
 
@@ -127,10 +129,10 @@ unsigned char *test_roundtrip(double *data, unsigned int n,
     }
 
     double avg_error = check_err(data, data2, n, abs_bound);
-    if (avg_error == -1) {
-        fprintf(stderr, "ERR: data error out of range\n");
+    if (avg_error < 0) {
+        fprintf(stderr, "ERR: data error out of range: %0.16f\n", avg_error);
     } else {
-        printf("avg error: %0.16f\n", avg_error);
+        printf("avg error = %0.16f\n", avg_error);
     }
 
     free(data2);
